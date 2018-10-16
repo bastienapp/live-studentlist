@@ -1,12 +1,21 @@
 package fr.wildcodeschool.averagestudent;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,6 +45,29 @@ public class MainActivity extends AppCompatActivity {
                     int note2 = Integer.parseInt(note2Str);
                     int note3 = Integer.parseInt(note3Str);
                     // TODO enregistrer dans Firebase
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference("student");
+                    StudentModel studentModel = new StudentModel(name, note1, note2, note3);
+                    ArrayList<ClassModel> classes = new ArrayList<>();
+                    classes.add(new ClassModel("Math", 4));
+                    classes.add(new ClassModel("Anglais", 2));
+                    //studentModel.setClasses(classes);
+
+                    myRef.push().setValue(studentModel);
+                    // à une clef on peut associer : String, double, int, boolean, Object, ArrayList
+
+
+                    /*
+                    "student" : {
+                        "$studentId" : {
+                            "name" : "...",
+                            "note1" : "...",
+                            "note2" : "...",
+                            "note3" : "...",
+                            "average" : "..."
+                        }
+                    }
+                    */
                 }
             }
         });
@@ -47,6 +79,27 @@ public class MainActivity extends AppCompatActivity {
                 // TODO aller vers la liste des étudiants
                 Intent goToStudentList = new Intent(MainActivity.this, StudentListActivity.class);
                 startActivity(goToStudentList);
+            }
+        });
+
+        // accès à la base de données
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        // je pointe vers ma référence "student"
+        DatabaseReference myRef = database.getReference("student");
+        // je lis toutes les données contenues dans "student"
+        myRef.orderByChild("average").limitToFirst(1)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot studentSnap : dataSnapshot.getChildren()) {
+                    StudentModel student = studentSnap.getValue(StudentModel.class);
+                    Toast.makeText(MainActivity.this, student.getName() + " : " + student.getAverage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
