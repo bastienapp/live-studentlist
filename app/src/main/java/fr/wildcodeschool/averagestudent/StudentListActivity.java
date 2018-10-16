@@ -12,6 +12,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class StudentListActivity extends AppCompatActivity {
 
@@ -31,7 +33,7 @@ public class StudentListActivity extends AppCompatActivity {
         // je pointe vers ma référence "student"
         DatabaseReference myRef = database.getReference("student");
         // je lis toutes les données contenues dans "student"
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.orderByChild("average").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // dataSnapshot contient toutes les données
@@ -43,6 +45,7 @@ public class StudentListActivity extends AppCompatActivity {
                             = studentSnapshot.getValue(StudentModel.class);
                     students.add(student);
                 }
+                Collections.reverse(students);
                 adapter.notifyDataSetChanged();
             }
 

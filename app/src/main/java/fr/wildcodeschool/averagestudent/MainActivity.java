@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         // je pointe vers ma référence "student"
         DatabaseReference myRef = database.getReference("student");
         // je lis toutes les données contenues dans "student"
-        myRef.orderByChild("average").limitToFirst(1)
+        myRef.orderByChild("average").limitToLast(1)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
