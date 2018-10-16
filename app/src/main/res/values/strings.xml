@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">AverageStudent</string>
+    <string name="name">Name</string>
+    <string name="note_1">Note 1</string>
+    <string name="note_2">Note 2</string>
+    <string name="note_3">Note 3</string>
+    <string name="send">Send</string>
+    <string name="go_to_student_list">Go to student list</string>
+</resources>
